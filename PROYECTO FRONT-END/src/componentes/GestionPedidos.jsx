@@ -36,7 +36,7 @@ export default function GestionPedidos() {
     try {
       const res = await axios.put(`http://localhost:3000/api/pedidos/recibir/${idPedido}`);
       setMensaje(`✅ ${res.data.mensaje}`);
-      cargarPedidos(); // Recargar la tabla para ver el cambio a "Recibido"
+      cargarPedidos(); 
     } catch (error) {
       console.error(error);
       setMensaje("❌ Error al confirmar la llegada.");
