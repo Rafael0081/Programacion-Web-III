@@ -74,7 +74,7 @@ export default function HistorialVentas() {
                     <tr key={venta.id_venta}>
                       <td className="fw-bold text-primary"># {venta.id_venta}</td>
                       <td>{formatearFecha(venta.fecha_hora)}</td>
-                      {/* Aquí extraemos el nombre del cliente que jaló Supabase */}
+            
                       <td className="fw-bold text-secondary">
                         {venta.cliente ? venta.cliente.nombre : 'Cliente Genérico'}
                       </td>
