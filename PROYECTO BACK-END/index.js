@@ -98,7 +98,7 @@ app.put('/api/productos/activar/:id', async (req, res) => {
     }
 });
 // ==========================================
-// LOGIN Y LOG DE ACCESO  Punto 9 y 11
+// LOGIN Y LOG DE ACCESO  
 // ==========================================
 app.post('/api/login', async (req, res) => {
     try {
@@ -158,7 +158,6 @@ app.post('/api/logout', async (req, res) => {
         const ip = req.ip || req.socket.remoteAddress;
         const browser = req.headers['user-agent']?.substring(0, 90) || 'Desconocido';
         
-        // Registrar el evento de salida
         const { error } = await supabase
             .from('log_acceso')
             .insert([{ 
@@ -177,7 +176,7 @@ app.post('/api/logout', async (req, res) => {
     }
 });
 // ==========================================
-// REGISTRO DE NUEVOS CLIENTES DESDE LA WEB Punto 10
+// REGISTRO DE NUEVOS CLIENTES DESDE LA WEB 
 // ==========================================
 app.post('/api/registro-cliente', async (req, res) => {
     try {
@@ -266,7 +265,7 @@ app.post('/api/comprar', async (req, res) => {
         const idDelCliente = clienteData.id_cliente;
         const nombreCliente = clienteData.nombre;
         
-        // 2. Determinar estado del pago según el método
+   
         let estadoPago = 'Completado';
         let observacionPago = '';
         
@@ -287,7 +286,7 @@ app.post('/api/comprar', async (req, res) => {
                 estadoPago = 'Completado';
                 observacionPago = `Pago estándar - Método: ${metodo_pago || 'No especificado'}`;
         }
-        // 3. Insertamos en VENTA usando el id_cliente
+       
         const { data: ventaData, error: errVenta } = await supabase
             .from('venta') 
             .insert([{
@@ -308,7 +307,7 @@ app.post('/api/comprar', async (req, res) => {
         }
         const idNuevaVenta = ventaData[0].id_venta;
         for (const item of carrito) {
-            // Insertar detalle de venta
+         
             const { error: errDetalle } = await supabase
                 .from('detalle_venta')
                 .insert([{
@@ -425,7 +424,7 @@ app.get('/api/pedidos', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-// 2. CREAR EL PEDIDO (Queda en estado "Pendiente" y NO suma stock)
+
 app.post('/api/pedidos', async (req, res) => {
   const { id_usuario, id_proveedor, carrito_pedido, total_pedido } = req.body;
   try {
@@ -440,10 +439,7 @@ app.post('/api/pedidos', async (req, res) => {
         total_pedido: total_pedido
       }])
       .select().single();
-
     if (errorPedido) throw errorPedido;
-
-    // Guardamos los detalles de la caja
     for (const item of carrito_pedido) {
       const { error: errorDetalle } = await supabase
         .from('detalle_pedido')
@@ -462,11 +458,10 @@ app.post('/api/pedidos', async (req, res) => {
   }
 });
 
-// 3. CONFIRMAR LLEGADA DEL CAMIÓN (Suma el stock al inventario)
+
 app.put('/api/pedidos/recibir/:id', async (req, res) => {
   const idPedido = req.params.id;
   try {
-    // A) Marcar como "Recibido" y poner la fecha de hoy
     const { error: errorUpdatePedido } = await supabase
       .from('pedido')
       .update({ 
@@ -476,14 +471,11 @@ app.put('/api/pedidos/recibir/:id', async (req, res) => {
       .eq('id_pedido', idPedido);
     if (errorUpdatePedido) throw errorUpdatePedido;
 
-    // B) Leer qué productos venían en este pedido
     const { data: detalles, error: errorDetalles } = await supabase
       .from('detalle_pedido')
       .select('id_producto, cantidad')
       .eq('id_pedido', idPedido);
     if (errorDetalles) throw errorDetalles;
-
-    // C) Recorrer los detalles y sumar el stock a los productos reales
     for (const item of detalles) {
       const { data: prodActual, error: errConsulta } = await supabase
         .from('producto')
@@ -562,7 +554,7 @@ app.put('/api/confirmar-pago/:id_venta', async (req, res) => {
 });
 
 // ==========================================
-// OBTENER VENTAS POR USUARIO (Historial de compras)
+// OBTENER VENTAS POR USUARIO 
 // ==========================================
 app.get('/api/mis-compras/:id_usuario', async (req, res) => {
     try {
@@ -607,7 +599,7 @@ app.delete('/api/usuarios/:id', async (req, res) => {
         
         const { data, error } = await supabase
             .from('usuario')
-            .update({ estado: false }) // Desactiva la cuenta
+            .update({ estado: false }) 
             .eq('id_usuario', id)
             .select();
 
