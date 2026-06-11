@@ -6,7 +6,6 @@ export default function HistorialVentas() {
   const [ventas, setVentas] = useState([]);
   const [error, setError] = useState('');
   
-  // Seguridad: Verificamos que solo el Admin pueda ver esto
   const rolUsuario = localStorage.getItem('rolUsuario');
 
   useEffect(() => {
@@ -24,7 +23,6 @@ export default function HistorialVentas() {
     }
   }, [rolUsuario]);
 
-  // Si no es Administrador, le bloqueamos el paso elegantemente
   if (rolUsuario !== 'Administrador') {
     return (
       <div className="container py-5 text-center">
@@ -35,7 +33,6 @@ export default function HistorialVentas() {
     );
   }
 
-  // Función para poner la fecha bonita (Día/Mes/Año Hora:Minutos)
   const formatearFecha = (fechaISO) => {
     const fecha = new Date(fechaISO);
     return fecha.toLocaleString('es-BO', { 
